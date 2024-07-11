@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="includes/icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/images/icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="includes/style.css">
-    <title>Register</title>
+    <title>Register - Munting Gabay</title>
 </head>
 <body>
 <?php
@@ -21,19 +20,19 @@ ini_set('display_errors', 1);
 
         <?php
         if (isset($_SESSION['status'])) {
-            echo "<h5 class='alert alert-success'>" . $_SESSION['status'] . "</h5>";
+            echo "<div class='alert alert-success'>" . $_SESSION['status'] . "</div>";
             unset($_SESSION['status']);
         }
         ?>
 
-        <div class="container">
+        <div class="container mt-5">
             <div class="row justify-content-center">
                 <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
+                    <div class="card shadow">
+                        <div class="card-header bg-success text-white">
                             <h4>
                                 Register
-                                <a href="index.php" class="btn btn-danger float-end">BACK</a>
+                                <a href="index.php" class="btn btn-light float-end">BACK</a>
                             </h4>
                         </div>
                         <div class="card-body">
@@ -54,7 +53,7 @@ ini_set('display_errors', 1);
                                     <label for="password">Password</label>
                                     <input type="password" name="password" class="form-control" required>
                                 </div>
-                                <button type="submit" name="register_btn" class="btn btn-primary">Register</button>
+                                <button type="submit" name="register_btn" class="btn btn-success btn-block">Register</button>
                             </form>
                         </div>
                     </div>
