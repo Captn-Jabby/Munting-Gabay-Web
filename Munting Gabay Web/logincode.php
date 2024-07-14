@@ -9,8 +9,19 @@ if (isset($_POST['login_btn'])) {
     $clearTextPassword = $_POST['password'];
     $full_name = $_POST['full-name'];
 
+    // Check for hardcoded admin credentials
+    if ($email === 'muntinggabay@gmail.com' && $clearTextPassword === 'Adminpassword') {
+        $_SESSION['verified_user_id'] = 'admin_uid'; 
+        $_SESSION['idTokenString'] = 'admin_id_token'; 
+        $_SESSION['user_email'] = $email;
+        $_SESSION['status'] = "Logged in Successfully as Admin";
+        header('Location: /muntinggabay1/Munting%20Gabay%20Web/admin/home.php'); 
+        exit();
+    }
+
+    // Proceed with Firebase authentication if the hardcoded credentials do not match
     try {
-        $user = $auth->getUserByEmail("$email");
+        $user = $auth->getUserByEmail($email);
         try {
             $signInResult = $auth->signInWithEmailAndPassword($email, $clearTextPassword);
             $idTokenString = $signInResult->idToken();
@@ -20,7 +31,6 @@ if (isset($_POST['login_btn'])) {
                 $uid = $verifiedIdToken->claims()->get('sub');
 
                 $_SESSION['verified_user_id'] = $uid;
-
                 $_SESSION['idTokenString'] = $idTokenString;
                 $_SESSION['user_email'] = $email;
                 $_SESSION['status'] = "Logged in Successfully";
