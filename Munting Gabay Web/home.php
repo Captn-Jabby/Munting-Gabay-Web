@@ -13,7 +13,7 @@ if (!isset($_SESSION['verified_user_id'])) {
 <head>
     <title>Home Page</title>
 </head>
-<body>
+<body class="d-flex flex-column vh-100">
 <?php 
 include('includes/header.php');
 ?>

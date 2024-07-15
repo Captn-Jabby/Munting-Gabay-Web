@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
-<body>
+<body class="d-flex flex-column vh-100">
     <?php include('includes/header.php'); ?>
     
     <header class="bg-success text-white text-center py-5">

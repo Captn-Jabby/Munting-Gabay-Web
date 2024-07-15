@@ -47,12 +47,6 @@ header("Expires: 0");
 $_SESSION['status'] = "<span style='color: red;'>Logout Successfully as Admin</span>";
 ?>
 </li>
-
-
-
-               
-               
-              
                 <?php endif; ?>
             </ul>
          
