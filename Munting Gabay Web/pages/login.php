@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Munting Gabay</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
@@ -13,7 +14,7 @@
     session_start();
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
-    include('includes/header.php');
+    include('../includes/header.php');
     ?>
 
     <div class="container mt-5">

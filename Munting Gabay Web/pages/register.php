@@ -1,8 +1,6 @@
 <?php
 session_start();
-
-// Include Firebase SDK initialization
-include('dbcon.php');
+include('../config/dbcon.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
@@ -16,19 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phone_number = $_POST['phone_number'];
     $specialty = $_POST['specialty'];
 
-    // File upload logic
     $identification = $_FILES['identification']['name'];
     $licensure = $_FILES['licensure']['name'];
     $profile_picture = $_FILES['profile_picture']['name'];
 
-    // File upload paths
-    $target_dir = "uploads/";
+    $target_dir = "../uploads/";
     $identification_target = $target_dir . basename($identification);
     $licensure_target = $target_dir . basename($licensure);
     $profile_picture_target = $target_dir . basename($profile_picture);
 
     try {
-        // Check if email already exists
         $user = $auth->getUserByEmail($email);
 
         if ($user) {
@@ -37,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         }
     } catch (\Kreait\Firebase\Exception\Auth\UserNotFound $e) {
-        // User does not exist, proceed with registration
     } catch (\Exception $e) {
         $_SESSION['error'] = 'Error: ' . $e->getMessage();
         header('Location: register.php');
@@ -45,12 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     try {
-        // Move uploaded files to target directory
         move_uploaded_file($_FILES["identification"]["tmp_name"], $identification_target);
         move_uploaded_file($_FILES["licensure"]["tmp_name"], $licensure_target);
         move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $profile_picture_target);
 
-        // Create the user with email and password
         $userProperties = [
             'email' => $email,
             'emailVerified' => false,
@@ -61,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $createdUser = $auth->createUser($userProperties);
 
-        // Add additional user details to Firestore
         $db->collection('doctors')->document($createdUser->uid)->set([
             'username' => $username,
             'name' => $name,
@@ -73,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'phone_number' => $phone_number,
             'specialty' => $specialty,
             'uid' => $createdUser->uid,
-            'status' => 'pending', // default status
+            'status' => 'pending',
             'identification' => $identification_target,
             'licensure' => $licensure_target,
             'profile_picture' => $profile_picture_target,
@@ -96,11 +87,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Doctor</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
 <body class="d-flex flex-column vh-100">
-    <?php include('includes/header.php'); ?>
+    <?php include('../includes/header.php'); ?>
 
     <div class="container mt-5">
         <?php if (isset($_SESSION['success'])) : ?>
@@ -121,8 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         <?php endif; ?>
 
-        <div class="card">
-            <div class="card-header bg-success text-white">
+        <div class="card mx-auto card-register">
+            <div class="card-header bg-success text-white text-center">
                 <h4>Register Doctor</h4>
             </div>
             <div class="card-body">
@@ -179,13 +171,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <label for="profile_picture" class="form-label">Profile Picture</label>
                         <input type="file" class="form-control" id="profile_picture" name="profile_picture" required>
                     </div>
-                    <button type="submit" class="btn btn-success">Register</button>
+                    <button type="submit" class="btn btn-success w-100">Register</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <?php include('includes/footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

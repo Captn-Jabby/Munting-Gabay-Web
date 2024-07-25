@@ -27,7 +27,7 @@ $messages = [
                 <ul class="list-group">
                     <?php foreach ($messages as $message) : ?>
                         <li class="list-group-item">
-                            <strong><?= htmlspecialchars($message['sender'], ENT_QUOTES, 'UTF-8'); ?></strong>: 
+                            <strong><?= htmlspecialchars($message['sender'], ENT_QUOTES, 'UTF-8'); ?></strong>:
                             <?= htmlspecialchars($message['message'], ENT_QUOTES, 'UTF-8'); ?>
                             <span class="text-muted float-end"><?= htmlspecialchars($message['timestamp'], ENT_QUOTES, 'UTF-8'); ?></span>
                         </li>
@@ -37,4 +37,3 @@ $messages = [
         </div>
     </div>
 </div>
-

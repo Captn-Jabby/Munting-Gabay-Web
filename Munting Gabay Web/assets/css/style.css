@@ -1,0 +1,310 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9fbe7;
+  color: #212529;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05); /* Slightly enlarge the card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
+}
+
+.card-header {
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 10px 10px 0 0;
+}
+
+.card-body {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+}
+
+.btn-success {
+  background-color: #4caf50;
+  border: none;
+  color: #fff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #2e6e41; /* Darker green for hover */
+  color: #fff; /* White text on hover */
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #4caf50;
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+  color: #fff;
+}
+
+.navbar-brand:hover,
+.navbar-nav .nav-link:hover {
+  color: #d4d4d4;
+}
+
+/* Footer Styles */
+footer {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 20px 0;
+}
+
+footer a {
+  color: #fff;
+}
+
+footer a:hover {
+  color: #d4d4d4;
+}
+
+/* Header Section */
+header {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 100px 0;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+header p {
+  font-size: 1.25rem;
+}
+
+/* Forms */
+.form-control {
+  border-radius: 0.25rem;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.form-label {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+/* Alerts */
+.alert {
+  margin-top: 20px;
+}
+
+.alert-success {
+  background-color: #d0e9c6;
+  border-color: #b2d8a6;
+  color: #3c763d;
+}
+
+.alert-danger {
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  color: #a94442;
+}
+
+/* Section Styles */
+.section {
+  padding: 60px 0;
+}
+
+.section.bg-light {
+  background-color: #f1f8e9;
+}
+
+.section h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.section p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+/* Image Styles */
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.img-fluid:hover {
+  transform: scale(1.1); /* Slightly enlarge the image */
+  filter: brightness(1.2); /* Brighten the image */
+}
+
+.rounded-circle {
+  border-radius: 50%;
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.bg-success {
+  background-color: #4caf50;
+}
+
+.bg-light {
+  background-color: #f1f8e9;
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.py-5 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.px-4 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Admin Home Page Styles */
+.card-title i {
+  margin-right: 10px;
+}
+
+/* Smooth scroll effect */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll-to-Top Button */
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  text-align: center;
+  line-height: 50px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.scroll-to-top.show {
+  opacity: 1;
+}
+
+.scroll-to-top:hover {
+  background: #218838;
+}
+
+/* Animation on scroll */
+.animate-on-scroll {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+
+/* Initial state for fade-in effect */
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out; /* Shorter transition time */
+}
+
+/* Fade-in effect for elements on scroll */
+.fade-in.visible {
+  opacity: 1;
+}
+
+/* Hover effect for cards */
+.card:hover {
+  transform: scale(1.05); /* Slightly enlarge the card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
+}
+
+/* Hover effect for buttons */
+.btn-success:hover {
+  background-color: #2e6e41; /* Darker green for hover */
+  color: #fff; /* White text on hover */
+}
+
+/* Hover effect for images */
+.img-fluid:hover {
+  transform: scale(1.1); /* Slightly enlarge the image */
+  filter: brightness(1.2); /* Brighten the image */
+}
+
+/* Card register styling */
+.card-register {
+  max-width: 600px;
+}
+
+/* Add this to your style.css or in a <style> tag */
+
+.nav-link.box-link {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 5px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: #fff;
+  background-color: #007bff; /* Bootstrap primary color */
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.nav-link.box-link:hover,
+.nav-link.box-link:focus {
+  background-color: #0056b3; /* Darker shade of primary color */
+  border-color: #0056b3;
+  text-decoration: none;
+}
+
+/* Add this to your style.css or inside a <style> block */
+.btn-outline-success.border-white {
+  border-color: white !important; /* Sets the border color to white */
+}

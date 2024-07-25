@@ -1,8 +1,29 @@
-<footer class="bg-success text-white text-center py-3 mt-auto">
-    <div class="container">
-        <p>&copy; 2024 Munting Gabay. All rights reserved.</p>
+<footer class="footer bg-success text-light py-4">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <p class="mb-1">&copy; 2024 Munting Gabay. All rights reserved.</p>
+                <!-- <div class="mt-2">
+                    <a href="https://facebook.com" target="_blank" class="text-light mx-2">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com" target="_blank" class="text-light mx-2">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="https://instagram.com" target="_blank" class="text-light mx-2">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                </div> -->
+            </div>
+        </div>
     </div>
 </footer>
 
-<!-- Bootstrap JavaScript Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="../assets/js/main.js"></script>
+</body>
+
+</html>
