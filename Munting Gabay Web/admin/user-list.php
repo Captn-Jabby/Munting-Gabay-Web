@@ -14,14 +14,8 @@ include('../includes/header.php');
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <?php
-            if (isset($_SESSION['status'])) {
-                echo "<div class='alert alert-success'>" . $_SESSION['status'] . "</div>";
-                unset($_SESSION['status']);
-            }
-            ?>
 
-            <div class="card">
+            <div class="bg-light">
                 <div class="card-header">
                     <h4>
                         Registered User List
