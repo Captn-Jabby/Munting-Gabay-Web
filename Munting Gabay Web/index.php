@@ -79,20 +79,20 @@
         </div>
 
         <div class="row mb-5">
-            <div class="col-lg-4 mb-4 fade-in">
-                <h3>Content 1</h3>
+            <div class="col-lg-4 mb-4 fade-in text-center">
+                <h3>Empowerment Through Awareness</h3>
                 <img src="assets/images/design.jpg" class="img-fluid" alt="Content 1">
-                <p class="mb-0">Empowerment Through Awareness: Confidentially learn about early signs of autism.</p>
+                <p class="mb-0">Confidentially learn about early signs of autism.</p>
             </div>
-            <div class="col-lg-4 mb-4 fade-in">
-                <h3>Content 2</h3>
+            <div class="col-lg-4 mb-4 fade-in text-center">
+                <h3>Confidential Autism Support</h3>
                 <img src="assets/images/image1.jpg" class="img-fluid" alt="Content 2">
-                <p class="mb-0">Confidential Autism Support: Discover early autism signs, enjoy therapeutic games, and track progress. Engage in seminars and forums for community support.</p>
+                <p class="mb-0">Discover early autism signs, enjoy therapeutic games, and track progress. Engage in seminars and forums for community support.</p>
             </div>
-            <div class="col-lg-4 mb-4 fade-in">
-                <h3>Content 3</h3>
+            <div class="col-lg-4 mb-4 fade-in text-center">
+                <h3>Comprehensive Autism Care</h3>
                 <img src="assets/images/images2.png" class="img-fluid" alt="Content 3">
-                <p class="mb-0">Comprehensive Autism Care: Discreetly learn about autism, connect with professionals, track milestones and join seminars and forums for shared insights and support.</p>
+                <p class="mb-0">Discreetly learn about autism, connect with professionals, track milestones and join seminars and forums for shared insights and support.</p>
             </div>
         </div>
 
