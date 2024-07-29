@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('includes/header.php');
+include('../includes/header.php');
 
 if (!isset($_SESSION['verified_user_id'])) {
     header('Location: login.php');
