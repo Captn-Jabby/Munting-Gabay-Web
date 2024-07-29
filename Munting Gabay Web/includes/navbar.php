@@ -1,10 +1,37 @@
 <?php
+// Function to check if a session is already started
+function session_status_check()
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+}
+
+// Call the session check function to ensure session is started
+session_status_check();
+
 // Determine the base URL based on the current script's directory
 $currentDir = basename(dirname($_SERVER['SCRIPT_FILENAME']));
 $basePath = ($currentDir === 'pages') ? '../' : '';
 
 // Get the current page name
 $currentPage = basename($_SERVER['SCRIPT_FILENAME'], ".php");
+
+$userDisplayName = 'Profile'; // Default display name for non-logged-in users
+
+// Fetch user info if logged in
+if (isset($_SESSION['verified_user_id'])) {
+    include('../config/dbcon.php'); // Ensure this file has been correctly included
+
+    $uid = $_SESSION['verified_user_id'];
+    try {
+        $user = $auth->getUser($uid);
+        $userDisplayName = htmlspecialchars($user->displayName, ENT_QUOTES, 'UTF-8');
+    } catch (Exception $e) {
+        // Handle user fetch error
+        $userDisplayName = 'Profile';
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -42,8 +69,9 @@ $currentPage = basename($_SERVER['SCRIPT_FILENAME'], ".php");
 
                     <li class="nav-item dropdown <?= in_array($currentPage, ['profile', 'account-settings', 'messages', 'notifications', 'help']) ? 'active' : '' ?>">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Profile
+                            <?= $userDisplayName ?>
                         </a>
+
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item <?= ($currentPage == 'profile') ? 'active' : '' ?>" href="<?= $basePath ?>profile.php">Profile Settings</a>
                             <a class="dropdown-item <?= ($currentPage == 'account-settings') ? 'active' : '' ?>" href="<?= $basePath ?>account-settings.php">Account Settings</a>

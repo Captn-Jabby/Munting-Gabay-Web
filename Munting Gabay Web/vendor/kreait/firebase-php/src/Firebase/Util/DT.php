@@ -12,7 +12,7 @@ use Throwable;
 /**
  * @internal
  */
-class DT
+final class DT
 {
     /**
      * @param mixed $value
@@ -48,13 +48,11 @@ class DT
             }
 
             // Milliseconds
-            if (\mb_strlen($value) === \mb_strlen((string) ($now * 1000))) {
-                $floatValue = (float) $value;
-                $result = DateTimeImmutable::createFromFormat('U.u', \sprintf('%F', $floatValue / 1000));
-
-                if ($result !== false) {
-                    return $result->setTimezone($tz);
-                }
+            if (
+                (\mb_strlen($value) === \mb_strlen((string) ($now * 1000)))
+                && $result = DateTimeImmutable::createFromFormat('U.u', \sprintf('%F', (float) ($value / 1000)))
+            ) {
+                return $result->setTimezone($tz);
             }
         }
 

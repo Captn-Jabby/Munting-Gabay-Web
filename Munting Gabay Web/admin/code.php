@@ -1,33 +1,26 @@
 <?php
 session_start();
-include('dbcon.php');
+include('../config/dbcon.php');
 
 
-if(isset($_POST['reg_user_delete_btn']))
-{
+if (isset($_POST['reg_user_delete_btn'])) {
     $uid = $_POST['reg_user_delete_btn'];
 
-    try
-    {
+    try {
         $auth->deleteUser($uid);
         $_SESSION['status'] = "User Deleted Successfully";
         header('Location: user-list.php');
         exit();
-
-    }
-    catch (Exception $e)
-    {
+    } catch (Exception $e) {
         $_SESSION['status'] = "User ID Found";
         header('Location: user-list.php');
         exit();
     }
-    
 }
 
 
 
-if(isset($_POST['update_user_btn']))
-{
+if (isset($_POST['update_user_btn'])) {
     $displayName = $_POST['full_name'];
     $phone = $_POST['phone'];
 
@@ -35,18 +28,15 @@ if(isset($_POST['update_user_btn']))
     $properties = [
         'displayName' => $displayName,
         'phoneNumber' => $phone,
-        ];
+    ];
 
-    $updateUser = $auth->updateUser($uid,$properties);
+    $updateUser = $auth->updateUser($uid, $properties);
 
-    if($updateUser)
-    {
+    if ($updateUser) {
         $_SESSION['status'] = "User Updated Successfully";
         header('Location: user-list.php');
         exit();
-    }
-    else
-    {
+    } else {
         $_SESSION['status'] = "User not Updated Successfully";
         header('Location: user-list.php');
         exit();
@@ -81,4 +71,3 @@ if (isset($_POST['register_btn'])) {
     header('Location: register.php');
     exit();
 }
-?>

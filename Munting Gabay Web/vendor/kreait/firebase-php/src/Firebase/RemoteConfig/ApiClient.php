@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase\RemoteConfig;
 
+use Beste\Json;
 use GuzzleHttp\ClientInterface;
 use Kreait\Firebase\Exception\RemoteConfigApiExceptionConverter;
 use Kreait\Firebase\Exception\RemoteConfigException;
-use Kreait\Firebase\Util\JSON;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Throwable;
@@ -20,9 +20,6 @@ class ApiClient
     private ClientInterface $client;
     private RemoteConfigApiExceptionConverter $errorHandler;
 
-    /**
-     * @internal
-     */
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
@@ -50,7 +47,7 @@ class ApiClient
             'query' => [
                 'validate_only' => 'true',
             ],
-            'body' => JSON::encode($template),
+            'body' => Json::encode($template),
         ]);
     }
 
@@ -64,7 +61,7 @@ class ApiClient
                 'Content-Type' => 'application/json; UTF-8',
                 'If-Match' => $template->etag(),
             ],
-            'body' => JSON::encode($template),
+            'body' => Json::encode($template),
         ]);
     }
 

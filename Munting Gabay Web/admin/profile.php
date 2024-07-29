@@ -2,6 +2,7 @@
 session_start();
 if (!isset($_SESSION['verified_user_id'])) {
     header('Location: login.php');
+    exit();
 }
 
 // Include the Firebase SDK initialization
@@ -21,15 +22,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = $_SESSION['user_email'];
 
         try {
-            // Sign in the user with their current password to reauthenticate
-            $signInResult = $auth->signInWithEmailAndPassword($email, $currentPassword);
+            // Reauthenticate the user
+            $auth->signInWithEmailAndPassword($email, $currentPassword);
 
             // Update the user's password
             $auth->changeUserPassword($uid, $newPassword);
-
             $success = "Password updated successfully!";
+        } catch (\Kreait\Firebase\Exception\Auth\InvalidPassword $e) {
+            $error = "Current password is incorrect.";
         } catch (\Kreait\Firebase\Exception\Auth\AuthError $e) {
-            $error = $e->getMessage();
+            $error = "Error updating password: " . $e->getMessage();
+        } catch (\Exception $e) {
+            $error = "An unexpected error occurred: " . $e->getMessage();
         }
     }
 }
@@ -55,7 +59,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <h4>Profile Settings</h4>
             </div>
             <div class="card-body">
-                <form action="update-profile.php" method="POST">
+                <?php if (isset($error)) : ?>
+                    <div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
+                <?php endif; ?>
+                <?php if (isset($success)) : ?>
+                    <div class="alert alert-success"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8'); ?></div>
+                <?php endif; ?>
+                <form action="profile.php" method="POST">
                     <div class="mb-3">
                         <label for="displayName" class="form-label">Display Name</label>
                         <input type="text" class="form-control" id="displayName" name="displayName" value="<?= htmlspecialchars($user->displayName, ENT_QUOTES, 'UTF-8'); ?>" required>
@@ -64,13 +74,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8'); ?>" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" name="current_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="new_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
+                    </div>
                     <button type="submit" class="btn btn-success">Update Profile</button>
                 </form>
             </div>
         </div>
     </div>
-
-
 
     <!-- Bootstrap JavaScript Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

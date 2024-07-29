@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase;
 
+use Beste\Json;
 use GuzzleHttp\Promise\Utils;
 use Kreait\Firebase\Exception\InvalidArgumentException;
 use Kreait\Firebase\Exception\Messaging\InvalidArgument;
@@ -19,14 +20,16 @@ use Kreait\Firebase\Messaging\Http\Request\SendMessages;
 use Kreait\Firebase\Messaging\Http\Request\SendMessageToTokens;
 use Kreait\Firebase\Messaging\Message;
 use Kreait\Firebase\Messaging\Messages;
+use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Firebase\Messaging\MulticastSendReport;
 use Kreait\Firebase\Messaging\RegistrationToken;
 use Kreait\Firebase\Messaging\RegistrationTokens;
 use Kreait\Firebase\Messaging\Topic;
-use Kreait\Firebase\Project\ProjectId;
-use Kreait\Firebase\Util\JSON;
 
-class Messaging implements Contract\Messaging
+/**
+ * @internal
+ */
+final class Messaging implements Contract\Messaging
 {
     private string $projectId;
 
@@ -34,19 +37,20 @@ class Messaging implements Contract\Messaging
 
     private AppInstanceApiClient $appInstanceApi;
 
-    /**
-     * @internal
-     */
-    public function __construct(ProjectId $projectId, ApiClient $messagingApiClient, AppInstanceApiClient $appInstanceApiClient)
+    public function __construct(string $projectId, ApiClient $messagingApiClient, AppInstanceApiClient $appInstanceApiClient)
     {
         $this->messagingApi = $messagingApiClient;
         $this->appInstanceApi = $appInstanceApiClient;
-        $this->projectId = $projectId->value();
+        $this->projectId = $projectId;
     }
 
     public function send($message, bool $validateOnly = false): array
     {
         $message = $this->makeMessage($message);
+
+        if (!$this->messageHasTarget($message)) {
+            throw new InvalidArgument('The given message is missing a target');
+        }
 
         $request = new SendMessage($this->projectId, $message, $validateOnly);
 
@@ -55,13 +59,13 @@ class Messaging implements Contract\Messaging
         } catch (NotFound $e) {
             $token = $message->jsonSerialize()['token'] ?? null;
             if ($token) {
-                throw NotFound::becauseTokenNotFound($token, $e->errors());
+                throw NotFound::becauseTokenNotFound($token);
             }
 
             throw $e;
         }
 
-        return JSON::decode((string) $response->getBody(), true);
+        return Json::decode((string) $response->getBody(), true);
     }
 
     public function sendMulticast($message, $registrationTokens, bool $validateOnly = false): MulticastSendReport
@@ -185,7 +189,7 @@ class Messaging implements Contract\Messaging
         try {
             return $this->appInstanceApi->getAppInstanceAsync($token)->wait();
         } catch (NotFound $e) {
-            throw NotFound::becauseTokenNotFound($token->value(), $e->errors());
+            throw NotFound::becauseTokenNotFound($token->value());
         } catch (MessagingException $e) {
             // The token is invalid
             throw new InvalidArgument("The registration token '{$token}' is invalid or not available", $e->getCode(), $e);
@@ -204,6 +208,15 @@ class Messaging implements Contract\Messaging
         }
 
         return CloudMessage::fromArray($message);
+    }
+
+    private function messageHasTarget(Message $message): bool
+    {
+        $check = Json::decode(Json::encode($message), true);
+
+        return \array_key_exists(MessageTarget::CONDITION, $check)
+            || \array_key_exists(MessageTarget::TOKEN, $check)
+            || \array_key_exists(MessageTarget::TOPIC, $check);
     }
 
     /**

@@ -1,10 +1,6 @@
 <?php
 session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Include dbcon.php to use Firebase $auth object
-include('../config/dbcon.php');
+include('../config/dbcon.php'); // Make sure to include the database connection
 include('../includes/header.php');
 
 if (!isset($_SESSION['verified_user_id'])) {
