@@ -6,7 +6,7 @@ use Kreait\Firebase\Contract\Auth;
 use Kreait\Firebase\Contract\Firestore;
 
 // Correct the path to the JSON file relative to dbcon.php
-$serviceAccountPath = __DIR__ . '/../munting-gabay-4f845-firebase-adminsdk-rlpiz-342aad293d.json';
+$serviceAccountPath = __DIR__ . '/../munting-gabay-4f845-firebase-adminsdk-rlpiz-86ce6e18ca.json';
 
 if (!file_exists($serviceAccountPath)) {
     die('Service account file not found at: ' . $serviceAccountPath);
