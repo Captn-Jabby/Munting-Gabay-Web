@@ -1,8 +1,0 @@
-/.build/
-/vendor/
-
-/.phpunit.result.cache
-/composer.lock
-/phpstan.neon
-/phpunit.xml
-/psalm.xml
