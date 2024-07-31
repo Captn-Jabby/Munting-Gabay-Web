@@ -1,0 +1,267 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9fbe7;
+  color: #212529;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05); /* Slightly enlarge the card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
+}
+
+.card-header {
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 10px 10px 0 0;
+}
+
+.card-body {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+}
+
+.btn-success {
+  background-color: #4caf50;
+  border: none;
+  color: #fff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #2e6e41; /* Darker green for hover */
+  color: #fff; /* White text on hover */
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #4caf50;
+  z-index: 1; /* Ensure navbar is above other elements */
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+  color: #fff;
+}
+
+.navbar-brand:hover,
+.navbar-nav .nav-link:hover {
+  color: #d4d4d4;
+}
+
+/* Sidebar Styles */
+#sidebar {
+  background-color: #2c6e49; /* Slightly darker green */
+  color: #fff;
+  height: 100vh; /* Full viewport height */
+  padding-top: 60px; /* Adjust to account for the height of the navbar */
+  position: fixed; /* Make it fixed */
+  top: 0;
+  left: 0;
+  width: 250px; /* Fixed width */
+  overflow-y: auto; /* Enable vertical scrolling if needed */
+  transition: width 0.3s ease;
+  z-index: 1000; /* Ensure it is above other content */
+}
+
+#sidebar h4 {
+  margin: 0;
+  padding: 15px;
+  background-color: #4caf50;
+  color: #fff;
+  text-align: center;
+}
+
+#sidebar .nav-link {
+  color: #e0f2f1; /* Light green for text */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 10px 20px; /* Adjust padding for better spacing */
+}
+
+#sidebar .nav-link:hover {
+  color: #fff; /* White text on hover */
+  background-color: #388e3c; /* Darker green for hover */
+}
+
+#sidebar .nav-link.active {
+  color: #fff; /* White text */
+  background-color: #66bb6a; /* Highlight color for active link */
+}
+
+/* Footer Styles */
+footer {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 20px 0;
+}
+
+footer a {
+  color: #fff;
+}
+
+footer a:hover {
+  color: #d4d4d4;
+}
+
+/* Header Section */
+header {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 100px 0;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+header p {
+  font-size: 1.25rem;
+}
+
+.btn-lg-custom {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Hero Section */
+.hero {
+  background: url("../assets/images/hero-bg.jpg") no-repeat center center/cover;
+  color: #fff;
+  text-align: center;
+  padding: 100px 0;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.5rem;
+}
+
+/* Profile Image Styling */
+.profile-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 50%;
+  filter: brightness(1.2); /* Brighten the image */
+}
+
+.rounded-circle {
+  border-radius: 50%;
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.bg-success {
+  background-color: #4caf50;
+}
+
+.bg-light {
+  background-color: #f1f8e9;
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.py-5 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.px-4 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Admin Home Page Styles */
+.card-title i {
+  margin-right: 10px;
+}
+
+/* Smooth scroll effect */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll-to-Top Button */
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  text-align: center;
+  line-height: 50px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.scroll-to-top.show {
+  opacity: 1;
+  transform: scale(1.1); /* Slightly enlarge when visible */
+}
+
+.scroll-to-top:hover {
+  background: #218838;
+}
+
+/* Animation on scroll */
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out; /* Shorter transition time */
+}
+
+.fade-in.visible {
+  opacity: 1;
+}

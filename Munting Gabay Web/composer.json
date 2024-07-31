@@ -1,0 +1,10 @@
+{
+  "require": {
+      "kreait/firebase-php": "^6.0",
+      "google/cloud-firestore": "^1.25",
+      "php": "^8.2",
+    "phpmailer/phpmailer": "^6.9",
+    "sendinblue/api-v3-sdk": "^8.4",
+    "getbrevo/brevo-php": "^2.0"
+  }
+}
