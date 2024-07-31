@@ -48,7 +48,7 @@ if (isset($_SESSION['verified_user_id'])) {
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <?php if (isset($_SESSION['verified_user_id'])) : ?>
-            <a class="navbar-brand" href="<?= $basePath ?>home.php">Admin Dashboard</a>
+
         <?php else : ?>
             <a class="navbar-brand" href="<?= $basePath ?>index.php">Munting Gabay</a>
         <?php endif; ?>
@@ -60,13 +60,6 @@ if (isset($_SESSION['verified_user_id'])) {
             <ul class="navbar-nav ml-auto">
                 <?php if (isset($_SESSION['verified_user_id'])) : ?>
                     <!-- Links for logged-in users -->
-                    <li class="nav-item <?= ($currentPage == 'home') ? 'active' : '' ?>">
-                        <a class="nav-link" href="<?= $basePath ?>home.php">Home</a>
-                    </li>
-                    <li class="nav-item <?= ($currentPage == 'user-list') ? 'active' : '' ?>">
-                        <a class="nav-link" href="<?= $basePath ?>user-list.php">User List</a>
-                    </li>
-
                     <li class="nav-item dropdown <?= in_array($currentPage, ['profile', 'account-settings', 'messages', 'notifications', 'help']) ? 'active' : '' ?>">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <?= $userDisplayName ?>

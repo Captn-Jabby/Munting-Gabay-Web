@@ -1,8 +1,28 @@
 # CHANGELOG
 
-## 2.3.1 - 2022-08-22
+## 3.0.3 - 2022-08-22
 
-Ensure (PHPStan) compatibility with `lcobucci/jwt` ^4.2
+* Ensured (PHPStan) compatibility with `lcobucci/jwt` ^4.2
+
+## 3.0.2 - 2022-06-22
+
+* Raised minimum version of Guzzle to address [CVE-2022-31090](https://github.com/advisories/GHSA-25mq-v84q-4j7r)
+  and [CVE-2022-31091](https://github.com/advisories/GHSA-q559-8m2m-g699)
+
+## 3.0.1 - 2022-06-10
+
+* Raise minimum version of Guzzle to address [CVE-2022-31042](https://github.com/advisories/GHSA-f2wf-25xc-69c9)
+
+## 3.0 - 2022-04-24
+
+Implemented forward compatible Clock-Interface
+  
+The [stella-maris/clock](https://packagist.org/packages/stella-maris/clock) package provides an interface based on the 
+currently proposed status of [PSR-20](https://github.com/php-fig/fig-standards/blob/6666a48cabf651bb0c06e090e028fe100100a45c/proposed/clock.md).
+Due to the inactivity of the PSR20 working group this is a way to already provide interoperability while still
+maintaining forward compatibility. When the current status of PSR20 will be released at one point in time the 
+stella-maris/clock package will extend the PSR-20 interface so that this package becomes immeadiately PSR20 compatible 
+without any further work necessary.
 
 ## 2.3.0 - 2022-04-16
 

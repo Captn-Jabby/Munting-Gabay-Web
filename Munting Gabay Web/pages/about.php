@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <div class="text-center mt-5">
+        <div class="text-center mt-1 mb-4">
             <a href="contact.php" class="btn btn-success btn-lg">Contact Us</a>
         </div>
     </main>

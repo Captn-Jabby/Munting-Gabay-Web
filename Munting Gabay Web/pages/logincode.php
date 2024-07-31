@@ -15,7 +15,6 @@ use Kreait\Firebase\Exception\Auth\AuthError;
 if (isset($_POST['login_btn'])) {
     $email = $_POST['email'];
     $clearTextPassword = $_POST['password'];
-    $full_name = isset($_POST['full-name']) ? $_POST['full-name'] : '';
 
     try {
         // Sign in the user
@@ -26,18 +25,18 @@ if (isset($_POST['login_btn'])) {
         $verifiedIdToken = $auth->verifyIdToken($idTokenString);
         $uid = $verifiedIdToken->claims()->get('sub');
 
-        // Set session variables
-        $_SESSION['verified_user_id'] = $uid;
-        $_SESSION['idTokenString'] = $idTokenString;
-        $_SESSION['user_email'] = $email;
-
         // Check if the user is the admin
         if ($uid === 'p09Ad1S0MWTj1IBjT9ezrnt4rPt1') {
+            // Set session variables for admin users
+            $_SESSION['verified_user_id'] = $uid;
+            $_SESSION['idTokenString'] = $idTokenString;
+            $_SESSION['user_email'] = $email;
             $_SESSION['status'] = "Logged in Successfully as Admin";
             header('Location: ../admin/home.php');
         } else {
-            $_SESSION['status'] = "Logged in Successfully";
-            header('Location: ../user/home.php');
+            // For non-admin users, do not set session variables
+            $_SESSION['status'] = "Not Allowed";
+            header('Location: login.php');
         }
         exit();
     } catch (InvalidPassword $e) {

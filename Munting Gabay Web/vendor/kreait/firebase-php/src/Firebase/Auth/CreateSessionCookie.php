@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace Kreait\Firebase\Auth;
 
 use Beste\Clock\SystemClock;
+use Beste\Clock\WrappingClock;
 use DateInterval;
 use Kreait\Firebase\Exception\InvalidArgumentException;
 use Lcobucci\JWT\Token;
-use Psr\Clock\ClockInterface;
+use StellaMaris\Clock\ClockInterface;
+
+use function is_int;
 
 final class CreateSessionCookie
 {
     private const FIVE_MINUTES = 'PT5M';
     private const TWO_WEEKS = 'P14D';
-
     private string $idToken;
     private ?string $tenantId;
     private DateInterval $ttl;
@@ -32,9 +34,13 @@ final class CreateSessionCookie
      * @param Token|string $idToken
      * @param int|DateInterval $ttl
      */
-    public static function forIdToken($idToken, ?string $tenantId, $ttl, ?ClockInterface $clock = null): self
+    public static function forIdToken($idToken, ?string $tenantId, $ttl, ?object $clock = null): self
     {
         $clock ??= SystemClock::create();
+
+        if (!$clock instanceof ClockInterface) {
+            $clock = WrappingClock::wrapping($clock);
+        }
 
         if ($idToken instanceof Token) {
             $idToken = $idToken->toString();
@@ -74,7 +80,7 @@ final class CreateSessionCookie
      */
     private static function assertValidDuration($ttl, ClockInterface $clock): DateInterval
     {
-        if (\is_int($ttl)) {
+        if (is_int($ttl)) {
             if ($ttl < 0) {
                 throw new InvalidArgumentException('A session cookie cannot be valid for a negative amount of time');
             }

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Kreait\Firebase\Auth;
 
 use Beste\Json;
+use DateInterval;
 use GuzzleHttp\ClientInterface;
+use Kreait\Firebase\Auth\CreateSessionCookie\GuzzleApiClientHandler;
 use Kreait\Firebase\Auth\SignIn\Handler as SignInHandler;
 use Kreait\Firebase\Exception\Auth\EmailNotFound;
 use Kreait\Firebase\Exception\Auth\ExpiredOobCode;
@@ -14,54 +16,74 @@ use Kreait\Firebase\Exception\Auth\OperationNotAllowed;
 use Kreait\Firebase\Exception\Auth\UserDisabled;
 use Kreait\Firebase\Exception\AuthApiExceptionConverter;
 use Kreait\Firebase\Exception\AuthException;
-use Kreait\Firebase\Request;
-use Psr\Clock\ClockInterface;
+use Kreait\Firebase\Request\CreateUser;
+use Kreait\Firebase\Request\UpdateUser;
 use Psr\Http\Message\ResponseInterface;
+use StellaMaris\Clock\ClockInterface;
+use Stringable;
 use Throwable;
+
+use function array_filter;
+use function array_map;
+use function is_array;
+use function str_contains;
+use function time;
 
 /**
  * @internal
  */
 class ApiClient
 {
-    private const PROJECT_URL_FORMAT = 'https://identitytoolkit.googleapis.com/{version}/projects/{projectId}{api}';
-    private const TENANT_URL_FORMAT = 'https://identitytoolkit.googleapis.com/{version}/projects/{projectId}/tenants/{tenantId}{api}';
-
     private string $projectId;
     private ?string $tenantId;
+
+    /** @var ProjectAwareAuthResourceUrlBuilder|TenantAwareAuthResourceUrlBuilder */
+    private $awareAuthResourceUrlBuilder;
+    private AuthResourceUrlBuilder $authResourceUrlBuilder;
     private ClientInterface $client;
     private SignInHandler $signInHandler;
     private ClockInterface $clock;
-
     private AuthApiExceptionConverter $errorHandler;
 
-    public function __construct(string $projectId, ?string $tenantId, ClientInterface $client, SignInHandler $signInHandler, ClockInterface $clock)
-    {
+    public function __construct(
+        string $projectId,
+        ?string $tenantId,
+        ClientInterface $client,
+        SignInHandler $signInHandler,
+        ClockInterface $clock
+    ) {
         $this->projectId = $projectId;
         $this->tenantId = $tenantId;
         $this->client = $client;
         $this->signInHandler = $signInHandler;
         $this->clock = $clock;
         $this->errorHandler = new AuthApiExceptionConverter();
+
+        $this->awareAuthResourceUrlBuilder = $tenantId !== null
+            ? TenantAwareAuthResourceUrlBuilder::forProjectAndTenant($projectId, $tenantId)
+            : ProjectAwareAuthResourceUrlBuilder::forProject($projectId);
+
+        $this->authResourceUrlBuilder = AuthResourceUrlBuilder::create();
     }
 
     /**
      * @throws AuthException
      */
-    public function createUser(Request\CreateUser $request): ResponseInterface
+    public function createUser(CreateUser $request): ResponseInterface
     {
-        return $this->requestApi('https://identitytoolkit.googleapis.com/v1/accounts:signUp', $request->jsonSerialize());
+        $url = $this->authResourceUrlBuilder->getUrl('/accounts:signUp');
+
+        return $this->requestApi($url, $request->jsonSerialize());
     }
 
     /**
      * @throws AuthException
      */
-    public function updateUser(Request\UpdateUser $request): ResponseInterface
+    public function updateUser(UpdateUser $request): ResponseInterface
     {
-        return $this->requestApi(
-            $this->createUrl('/accounts:update'),
-            $request->jsonSerialize()
-        );
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:update');
+
+        return $this->requestApi($url, $request->jsonSerialize());
     }
 
     /**
@@ -71,29 +93,25 @@ class ApiClient
      */
     public function setCustomUserClaims(string $uid, array $claims): ResponseInterface
     {
-        return $this->requestApi(
-            $this->createUrl('/accounts:update'),
-            [
-                'localId' => $uid,
-                'customAttributes' => Json::encode($claims, JSON_FORCE_OBJECT),
-            ]
-        );
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:update');
+
+        return $this->requestApi($url, [
+            'localId' => $uid,
+            'customAttributes' => JSON::encode((object) $claims),
+        ]);
     }
 
     /**
      * Returns a user for the given email address.
      *
-     * @throws EmailNotFound
      * @throws AuthException
+     * @throws EmailNotFound
      */
     public function getUserByEmail(string $email): ResponseInterface
     {
-        return $this->requestApi(
-            $this->createUrl('/accounts:lookup'),
-            [
-                'email' => [$email],
-            ]
-        );
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:lookup');
+
+        return $this->requestApi($url, ['email' => [$email]]);
     }
 
     /**
@@ -101,12 +119,9 @@ class ApiClient
      */
     public function getUserByPhoneNumber(string $phoneNumber): ResponseInterface
     {
-        return $this->requestApi(
-            $this->createUrl('/accounts:lookup'),
-            [
-                'phoneNumber' => [$phoneNumber],
-            ]
-        );
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:lookup');
+
+        return $this->requestApi($url, ['phoneNumber' => [$phoneNumber]]);
     }
 
     /**
@@ -116,18 +131,14 @@ class ApiClient
     {
         $batchSize = $batchSize ?: 1000;
 
-        $urlParams = \array_filter([
+        $urlParams = array_filter([
             'maxResults' => (string) $batchSize,
             'nextPageToken' => (string) $nextPageToken,
         ]);
 
-        $query = \http_build_query($urlParams);
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:batchGet', $urlParams);
 
-        return $this->requestApi(
-            $this->createUrl('/accounts:batchGet?'.$query),
-            [],
-            'GET'
-        );
+        return $this->requestApi($url);
     }
 
     /**
@@ -135,12 +146,9 @@ class ApiClient
      */
     public function deleteUser(string $uid): ResponseInterface
     {
-        return $this->requestApi(
-            $this->createUrl('/accounts:delete'),
-            [
-                'localId' => $uid,
-            ]
-        );
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:delete');
+
+        return $this->requestApi($url, ['localId' => $uid]);
     }
 
     /**
@@ -155,7 +163,9 @@ class ApiClient
             'force' => $forceDeleteEnabledUsers,
         ];
 
-        return $this->requestApi($this->createUrl('/accounts:batchDelete'), $data);
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:batchDelete');
+
+        return $this->requestApi($url, $data);
     }
 
     /**
@@ -165,43 +175,53 @@ class ApiClient
      */
     public function getAccountInfo($uids): ResponseInterface
     {
-        if (!\is_array($uids)) {
+        if (!is_array($uids)) {
             $uids = [$uids];
         }
 
-        return $this->requestApi($this->createUrl('/accounts:lookup'), ['localId' => $uids]);
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:lookup');
+
+        return $this->requestApi($url, ['localId' => $uids]);
     }
 
     /**
+     * @throws AuthException
+     */
+    public function queryUsers(UserQuery $query): ResponseInterface
+    {
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:query');
+
+        return $this->requestApi($url, $query->jsonSerialize());
+    }
+
+    /**
+     * @throws AuthException
      * @throws ExpiredOobCode
      * @throws InvalidOobCode
      * @throws OperationNotAllowed
-     * @throws AuthException
      */
     public function verifyPasswordResetCode(string $oobCode): ResponseInterface
     {
-        return $this->requestApi(
-            'https://identitytoolkit.googleapis.com/v1/accounts:resetPassword',
-            ['oobCode' => $oobCode]
-        );
+        $url = $this->authResourceUrlBuilder->getUrl('/accounts:resetPassword');
+
+        return $this->requestApi($url, ['oobCode' => $oobCode]);
     }
 
     /**
+     * @throws AuthException
      * @throws ExpiredOobCode
      * @throws InvalidOobCode
      * @throws OperationNotAllowed
      * @throws UserDisabled
-     * @throws AuthException
      */
     public function confirmPasswordReset(string $oobCode, string $newPassword): ResponseInterface
     {
-        return $this->requestApi(
-            'https://identitytoolkit.googleapis.com/v1/accounts:resetPassword',
-            [
-                'oobCode' => $oobCode,
-                'newPassword' => $newPassword,
-            ]
-        );
+        $url = $this->authResourceUrlBuilder->getUrl('/accounts:resetPassword');
+
+        return $this->requestApi($url, [
+            'oobCode' => $oobCode,
+            'newPassword' => $newPassword,
+        ]);
     }
 
     /**
@@ -209,44 +229,48 @@ class ApiClient
      */
     public function revokeRefreshTokens(string $uid): ResponseInterface
     {
-        return $this->requestApi($this->createUrl('/accounts:update'), [
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:update');
+
+        return $this->requestApi($url, [
             'localId' => $uid,
-            'validSince' => (string) \time(),
+            'validSince' => (string) time(),
         ]);
     }
 
     /**
-     * @param array<int, \Stringable|string> $providers
+     * @param array<int, Stringable|string> $providers
      *
      * @throws AuthException
      */
     public function unlinkProvider(string $uid, array $providers): ResponseInterface
     {
-        $providers = \array_map('strval', $providers);
+        $url = $this->awareAuthResourceUrlBuilder->getUrl('/accounts:update');
+        $providers = array_map('strval', $providers);
 
-        return $this->requestApi($this->createUrl('/accounts:update'), [
+        return $this->requestApi($url, [
             'localId' => $uid,
             'deleteProvider' => $providers,
         ]);
     }
 
     /**
-     * @param int|\DateInterval $ttl
+     * @param int|DateInterval $ttl
      */
     public function createSessionCookie(string $idToken, $ttl): string
     {
-        return (new CreateSessionCookie\GuzzleApiClientHandler($this->client, $this->projectId))
-            ->handle(CreateSessionCookie::forIdToken($idToken, $this->tenantId, $ttl, $this->clock))
-        ;
+        return (new GuzzleApiClientHandler($this->client, $this->projectId))
+            ->handle(CreateSessionCookie::forIdToken($idToken, $this->tenantId, $ttl, $this->clock));
     }
 
     public function getEmailActionLink(string $type, string $email, ActionCodeSettings $actionCodeSettings, ?string $locale = null): string
     {
         return (new CreateActionLink\GuzzleApiClientHandler($this->client, $this->projectId))
-            ->handle(CreateActionLink::new($type, $email, $actionCodeSettings, $this->tenantId, $locale))
-            ;
+            ->handle(CreateActionLink::new($type, $email, $actionCodeSettings, $this->tenantId, $locale));
     }
 
+    /**
+     * TODO: Make that this method can be emulated.
+     */
     public function sendEmailActionLink(string $type, string $email, ActionCodeSettings $actionCodeSettings, ?string $locale = null, ?string $idToken = null): void
     {
         $createAction = CreateActionLink::new($type, $email, $actionCodeSettings, $this->tenantId, $locale);
@@ -259,6 +283,9 @@ class ApiClient
         (new SendActionLink\GuzzleApiClientHandler($this->client, $this->projectId))->handle($sendAction);
     }
 
+    /**
+     * TODO: Make that this method can be emulated.
+     */
     public function handleSignIn(SignIn $action): SignInResult
     {
         if ($this->tenantId !== null) {
@@ -273,24 +300,22 @@ class ApiClient
      *
      * @throws AuthException
      */
-    private function requestApi(string $uri, array $data, string $method = 'POST'): ResponseInterface
+    private function requestApi(string $uri, ?array $data = null): ResponseInterface
     {
         $options = [];
+        $method = 'GET';
 
-        if (!\str_contains($uri, 'projects')) {
+        if (!str_contains($uri, 'projects')) {
             $data['targetProjectId'] = $this->projectId;
         }
 
-        if ($this->tenantId !== null && !\str_contains($uri, 'tenants')) {
+        if ($this->tenantId !== null && !str_contains($uri, 'tenants')) {
             $data['tenantId'] = $this->tenantId;
         }
 
         if (!empty($data)) {
-            if ($method === 'POST') {
-                $options['json'] = $data;
-            } else {
-                $options['query'] = $data;
-            }
+            $method = 'POST';
+            $options['json'] = $data;
         }
 
         try {
@@ -298,22 +323,5 @@ class ApiClient
         } catch (Throwable $e) {
             throw $this->errorHandler->convertException($e);
         }
-    }
-
-    private function createUrl(?string $api): string
-    {
-        $baseUrl = self::PROJECT_URL_FORMAT;
-        $pathParams = [
-            '{api}' => $api ?? '',
-            '{projectId}' => $this->projectId,
-            '{version}' => 'v1',
-        ];
-
-        if ($this->tenantId !== null) {
-            $baseUrl = self::TENANT_URL_FORMAT;
-            $pathParams['{tenantId}'] = $this->tenantId;
-        }
-
-        return \strtr($baseUrl, $pathParams);
     }
 }

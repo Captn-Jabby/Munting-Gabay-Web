@@ -4,14 +4,13 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
+class ComposerStaticInit21043bf94b0c7020a99e1aecd7e334d0
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
-        'f4a5cb38eba0d7987c96dc4c07da6291' => __DIR__ . '/..' . '/beste/clock/src/psr-polyfill.php',
         '1232758e40b1d31bb295b6907de02c63' => __DIR__ . '/..' . '/beste/clock/src/Clock.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '06b8a576aaa70a8517a94b7ff6b37e5c' => __DIR__ . '/..' . '/beste/json/src/Json.php',
@@ -26,6 +25,8 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
             'Symfony\\Polyfill\\Php81\\' => 23,
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'StellaMaris\\Clock\\' => 18,
+            'SendinBlue\\Client\\' => 18,
         ),
         'R' => 
         array (
@@ -41,6 +42,7 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
             'Psr\\Http\\Client\\' => 16,
             'Psr\\Clock\\' => 10,
             'Psr\\Cache\\' => 10,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'M' => 
         array (
@@ -73,6 +75,7 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
             'Google\\LongRunning\\' => 19,
             'Google\\Iam\\' => 11,
             'Google\\Cloud\\Storage\\' => 21,
+            'Google\\Cloud\\Firestore\\' => 23,
             'Google\\Cloud\\Core\\' => 18,
             'Google\\Cloud\\' => 13,
             'Google\\Auth\\' => 12,
@@ -85,6 +88,7 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
             'GPBMetadata\\Google\\Longrunning\\' => 31,
             'GPBMetadata\\Google\\Logging\\' => 27,
             'GPBMetadata\\Google\\Iam\\' => 23,
+            'GPBMetadata\\Google\\Firestore\\' => 29,
             'GPBMetadata\\Google\\Cloud\\' => 25,
             'GPBMetadata\\Google\\Api\\' => 23,
             'GPBMetadata\\ApiCore\\' => 20,
@@ -97,6 +101,7 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
         'B' => 
         array (
             'Brick\\Math\\' => 11,
+            'Brevo\\Client\\' => 13,
             'Beste\\Clock\\' => 12,
         ),
     );
@@ -113,6 +118,14 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'StellaMaris\\Clock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/stella-maris/clock/src',
+        ),
+        'SendinBlue\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sendinblue/api-v3-sdk/lib',
         ),
         'Rize\\' => 
         array (
@@ -150,6 +163,10 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
         'Psr\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'Monolog\\' => 
         array (
@@ -219,6 +236,10 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
         array (
             0 => __DIR__ . '/..' . '/google/cloud-storage/src',
         ),
+        'Google\\Cloud\\Firestore\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/cloud-firestore/src',
+        ),
         'Google\\Cloud\\Core\\' => 
         array (
             0 => __DIR__ . '/..' . '/google/cloud-core/src',
@@ -267,6 +288,10 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
         array (
             0 => __DIR__ . '/..' . '/google/common-protos/metadata/Iam',
         ),
+        'GPBMetadata\\Google\\Firestore\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/cloud-firestore/metadata',
+        ),
         'GPBMetadata\\Google\\Cloud\\' => 
         array (
             0 => __DIR__ . '/..' . '/google/common-protos/metadata/Cloud',
@@ -290,6 +315,10 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
         'Brick\\Math\\' => 
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
+        ),
+        'Brevo\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/getbrevo/brevo-php/lib',
         ),
         'Beste\\Clock\\' => 
         array (
@@ -317,9 +346,9 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit21043bf94b0c7020a99e1aecd7e334d0::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit21043bf94b0c7020a99e1aecd7e334d0::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit21043bf94b0c7020a99e1aecd7e334d0::$classMap;
 
         }, null, ClassLoader::class);
     }

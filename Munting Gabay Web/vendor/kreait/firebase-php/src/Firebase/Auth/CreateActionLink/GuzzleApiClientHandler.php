@@ -11,7 +11,13 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
 use Kreait\Firebase\Auth\CreateActionLink;
+use Kreait\Firebase\Auth\ProjectAwareAuthResourceUrlBuilder;
+use Kreait\Firebase\Auth\TenantAwareAuthResourceUrlBuilder;
 use Psr\Http\Message\RequestInterface;
+
+use const JSON_FORCE_OBJECT;
+
+use function array_filter;
 
 final class GuzzleApiClientHandler implements Handler
 {
@@ -53,26 +59,28 @@ final class GuzzleApiClientHandler implements Handler
 
     private function createRequest(CreateActionLink $action): RequestInterface
     {
-        $data = \array_filter([
+        $data = array_filter([
             'requestType' => $action->type(),
             'email' => $action->email(),
             'returnOobLink' => true,
         ]) + $action->settings()->toArray();
 
         if ($tenantId = $action->tenantId()) {
-            $uri = "https://identitytoolkit.googleapis.com/v1/projects/{$this->projectId}/tenants/{$tenantId}/accounts:sendOobCode";
+            $urlBuilder = TenantAwareAuthResourceUrlBuilder::forProjectAndTenant($this->projectId, $tenantId);
         } else {
-            $uri = "https://identitytoolkit.googleapis.com/v1/projects/{$this->projectId}/accounts:sendOobCode";
+            $urlBuilder = ProjectAwareAuthResourceUrlBuilder::forProject($this->projectId);
         }
+
+        $url = $urlBuilder->getUrl('/accounts:sendOobCode');
 
         $body = Utils::streamFor(Json::encode($data, JSON_FORCE_OBJECT));
 
-        $headers = \array_filter([
+        $headers = array_filter([
             'Content-Type' => 'application/json; charset=UTF-8',
             'Content-Length' => (string) $body->getSize(),
             'X-Firebase-Locale' => $action->locale(),
         ]);
 
-        return new Request('POST', $uri, $headers, $body);
+        return new Request('POST', $url, $headers, $body);
     }
 }

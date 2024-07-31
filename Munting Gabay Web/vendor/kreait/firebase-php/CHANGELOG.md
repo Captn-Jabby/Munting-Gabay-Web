@@ -2,6 +2,230 @@
 
 ## [Unreleased]
 
+## [6.9.6] - 2023-06-10
+
+### Changed
+
+* Removed direct dependency to `psr/http-message`
+
+## [6.9.5] - 2023-01-27
+
+### Fixed
+
+* Cloud Messaging: The APNS `apns-push-type` header and `content-available` payload field were not set correctly
+  when a message contained message data at the root level, but not at the APNS config level.
+  ([#762](https://github.com/kreait/firebase-php/pull/762))
+
+## [6.9.4] - 2023-01-24
+
+### Fixed
+
+* When trying to work with unknown FCM tokens, errors returned from the Messaging REST API were not passed to the
+  `NotFound` exception, which prevented the inspection of further details.
+  (backported from [#760](https://github.com/kreait/firebase-php/pull/760))
+
+## [6.9.3] - 2022-11-04
+
+### Fixed
+
+* When no Service Account was provided, custom token were generated with a direct call to the Google Identity Toolkit,
+  which could create invalid token signatures depending on the environment (e.g. GCE).
+  Now, the provided credentials are used to sign custom tokens via the 
+  `Kreait\Firebase\Auth\CustomTokenViaGoogleCredentials` class. This is an internal class and should not be used
+  directly.
+  ([#745](https://github.com/kreait/firebase-php/pull/745))
+
+### Deprecated
+
+* `Kreait\Firebase\Auth\CustomTokenViaGoogleIam` (internal)
+
+## [6.9.2] - 2022-10-17
+
+### Fixed
+
+* Removed `"replace": {"symfony/polyfill-mbstring": "*"}` from `composer.json` because it made SDK updates
+  uninstallable in projects that require other libraries needing it.
+  ([#742](https://github.com/kreait/firebase-php/pull/742)
+
+## [6.9.1] - 2022-09-26
+
+### Added
+
+* Added `Kreait\Firebase\RemoteConfig\Template::conditionNames()` to return a list of condition names 
+  of a Remote Config template
+* Added `Kreait\Firebase\RemoteConfig\Template::withRemovedCondition(string $name)` to remove a condition from
+  a Remote Config template by name
+
+### Fixed
+
+* HTTP Proxy settings were not applied to the Auth Token Handler. Because of this, outgoing, proxied requests couldn't
+  be authenticated, effectively breaking the SDK.
+  ([#735](https://github.com/kreait/firebase-php/pull/735)
+
+## [6.9.0] - 2022-09-16
+
+### Added
+
+* Added support for Remote Config Personalization
+  ([#731](https://github.com/kreait/firebase-php/pull/731)/[#733](https://github.com/kreait/firebase-php/pull/733))
+  * Note: Personalization (currently) can not be added programmatically. The values can only be read and removed from a
+    Remote Config Template. To add Personalization, use the Firebase Web Console.
+* Added `Kreait\Firebase\RemoteConfig\Template::withRemovedParameter(string $name)` to remove an existing parameter 
+  from a Remote Config Template
+* Added method `Kreait\Firebase\RemoteConfig\Template::withRemovedParameterGroup(string $name)` to remove an existing 
+  parameter group from a Remote Config Template
+* Added `Kreait\Firebase\RemoteConfig\DefaultValue::useInAppDefault()`
+
+### Deprecated
+
+* `Kreait\Firebase\RemoteConfig\DefaultValue::IN_APP_DEFAULT_VALUE`
+* `Kreait\Firebase\RemoteConfig\DefaultValue::none()`
+* `Kreait\Firebase\RemoteConfig\DefaultValue::value()`
+
+## [6.8.0] - 2022-08-20
+
+### Added
+
+* Added `Auth::queryUsers()` to process subsets of users with more parameters than `Auth::listUsers()`. 
+  `listUsers()` is a fast and memory-efficient way to process a large list of users. `queryUsers()` provides 
+  sorting and filtering by given fields and pagination.
+  ([#727](https://github.com/kreait/firebase-php/pull/727)/[#728](https://github.com/kreait/firebase-php/pull/728)) 
+  ([Documentation](https://firebase-php.readthedocs.io/en/latest/user-management.html#query-users))
+
+## [6.7.1] - 2022-08-17
+
+### Fixed
+
+* Limits and filters were not applied to Realtime Database Queries
+  ([#725](https://github.com/kreait/firebase-php/pull/725))
+
+## [6.7.0] - 2022-07-28
+
+### Added
+
+* Added support for the Firebase Realtime Database Emulator.
+  ([#722](https://github.com/kreait/firebase-php/pull/722)) ([Documentation](https://firebase-php.readthedocs.io/en/latest/testing.html))
+
+### Changed
+
+* The default HTTP Client options have been updated
+  ([#723](https://github.com/kreait/firebase-php/issues/723))
+  * Connect Timeout from ∞ to 15 seconds
+  * Timeout from ∞ to 30 seconds
+
+## [6.6.1] - 2022-07-12
+
+### Fixed
+
+* The `WebPushConfig` class is now more lenient with TTL values, and urgencies are checked if they are valid
+  ([#716](https://github.com/kreait/firebase-php/issues/716))
+* The `AndroidConfig` didn't allow the TTL to be `null`)
+  ([#719](https://github.com/kreait/firebase-php/issues/719))
+
+## [6.6.0] - 2022-07-07
+
+### Fixed
+
+* The `AndroidConfig` class is now more lenient with TTL values
+  ([#713](https://github.com/kreait/firebase-php/issues/713))
+
+### Added
+
+* The maximum amount of messages that can be sent in batches can be accessed 
+  `Kreait\Firebase\Contract\Messaging::BATCH_MESSAGE_LIMIT`
+
+### Deprecated
+
+* `Kreait\Firebase\Messaging\Http\Request\SendMessages::MAX_AMOUNT_OF_MESSAGES`
+* `Kreait\Firebase\Messaging\Http\Request\SendMessageToTokens::MAX_AMOUNT_OF_TOKENS`
+
+## [6.5.1] - 2022-06-27
+
+### Fixed
+
+* Keys in the data payload of an FCM message were always lower-cased, although they shouldn't have been.
+  ([#709](https://github.com/kreait/firebase-php/issues/709)
+
+## [6.5.0] - 2022-06-22
+
+### Added
+
+* Problems while fetching Dynamic Link statistics now result in more helpful exception messages.
+  ([#707](https://github.com/kreait/firebase-php/issues/707)
+
+### Changed
+
+* Raised minimum version of Guzzle to address [CVE-2022-31090](https://github.com/advisories/GHSA-25mq-v84q-4j7r)
+  and [CVE-2022-31091](https://github.com/advisories/GHSA-q559-8m2m-g699)
+
+## [6.4.1 - 2022-06-15]
+
+### Fixed
+
+* Updating a Realtime Database Ruleset converted lists to objects with numeric keys.
+  ([#706](https://github.com/kreait/firebase-php/pull/706))
+
+### Changed
+
+* Raised minimum version of Guzzle to address [CVE-2022-31042](https://github.com/advisories/GHSA-f2wf-25xc-69c9)
+
+## [6.4.0] - 2022-06-08
+
+### Added
+
+* If not already set, APNs configs are enriched with the necessary headers and fields to ensure the delivery of
+  iOS background messages and alerts.
+  * The `apns-push-type` header is set to `background` or `alert`
+  * The `content-available` field is set to `1` in case of a background message
+* FCM Messages are now annotated for better PHPStan/Psalm resolution
+* Added methods
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withMinimalNotificationPriority()`
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withLowNotificationPriority()`
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withDefaultNotificationPriority()`
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withHighNotificationPriority()`
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withMaximalNotificationPriority()`
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withNotificationPriority()`
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withUnspecifiedNotificationPriority()`
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withPrivateNotificationVisibility()`
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withPublicNotificationVisibility()`
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withSecretNotificationVisibility()`
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withNotificationVisibility()`
+  * `\Kreait\Firebase\Messaging\ApnsConfig::data()`
+  * `\Kreait\Firebase\Messaging\ApnsConfig::hasHeader()`
+  * `\Kreait\Firebase\Messaging\ApnsConfig::isAlert()`
+  * `\Kreait\Firebase\Messaging\ApnsConfig::toArray()`
+  * `\Kreait\Firebase\Messaging\ApnsConfig::withApsField()`
+  * `\Kreait\Firebase\Messaging\ApnsConfig::withDataField()`
+  * `\Kreait\Firebase\Messaging\ApnsConfig::withHeader()`
+
+### Changed
+
+* FCM notifications (`Kreait\Firebase\Messaging\Notification`) can now be created with null values. 
+  If a notification has _only_ null values, the notification payload will be removed on 
+  serialization as if it wasn't provided at all.
+* Deprecations
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withHighPriority()`, 
+    use `\Kreait\Firebase\Messaging\AndroidConfig::withHighMessagePriority()` instead
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withNormalPriority()`, 
+    use `\Kreait\Firebase\Messaging\AndroidConfig::withNormalMessagePriority()` instead
+  * `\Kreait\Firebase\Messaging\AndroidConfig::withPriority()`, 
+    use `\Kreait\Firebase\Messaging\AndroidConfig::withMessagePriority()` instead
+
+## [6.3.1] - 2022-05-07
+
+### Fixed
+
+* Nested lists in custom user claims were not correctly encoded. 
+  ([#699](https://github.com/kreait/firebase-php/pull/699))
+
+## [6.3.0] - 2022-04-24
+
+### Added
+
+* Added support for the Firebase Auth Emulator.
+  ([#692](https://github.com/kreait/firebase-php/pull/692)) ([Documentation](https://firebase-php.readthedocs.io/en/latest/testing.html))
+* Tenant aware session cookie handling is now officially supported.
+
 ## [6.2.0] - 2022-03-03
 
 ### Added
@@ -139,7 +363,25 @@ methods.
     * `Kreait\Firebase\Value\Uid`
     * `Kreait\Firebase\Value\Url`
 
-[Unreleased]: https://github.com/kreait/firebase-php/compare/6.2.0...6.x
+[Unreleased]: https://github.com/kreait/firebase-php/compare/6.9.6...6.x
+[6.9.6]: https://github.com/kreait/firebase-php/compare/6.9.5...6.9.6
+[6.9.5]: https://github.com/kreait/firebase-php/compare/6.9.4...6.9.5
+[6.9.4]: https://github.com/kreait/firebase-php/compare/6.9.3...6.9.4
+[6.9.3]: https://github.com/kreait/firebase-php/compare/6.9.2...6.9.3
+[6.9.2]: https://github.com/kreait/firebase-php/compare/6.9.1...6.9.2
+[6.9.1]: https://github.com/kreait/firebase-php/compare/6.9.0...6.9.1
+[6.9.0]: https://github.com/kreait/firebase-php/compare/6.8.0...6.9.0
+[6.8.0]: https://github.com/kreait/firebase-php/compare/6.7.1...6.8.0
+[6.7.1]: https://github.com/kreait/firebase-php/compare/6.7.0...6.7.1
+[6.7.0]: https://github.com/kreait/firebase-php/compare/6.6.1...6.7.0
+[6.6.1]: https://github.com/kreait/firebase-php/compare/6.6.0...6.6.1
+[6.6.0]: https://github.com/kreait/firebase-php/compare/6.5.1...6.6.0
+[6.5.1]: https://github.com/kreait/firebase-php/compare/6.5.0...6.5.1
+[6.5.0]: https://github.com/kreait/firebase-php/compare/6.4.1...6.5.0
+[6.4.1]: https://github.com/kreait/firebase-php/compare/6.4.0...6.4.1
+[6.4.0]: https://github.com/kreait/firebase-php/compare/6.3.1...6.4.0
+[6.3.1]: https://github.com/kreait/firebase-php/compare/6.3.0...6.3.1
+[6.3.0]: https://github.com/kreait/firebase-php/compare/6.2.0...6.3.0
 [6.2.0]: https://github.com/kreait/firebase-php/compare/6.1.0...6.2.0
 [6.1.0]: https://github.com/kreait/firebase-php/compare/6.0.1...6.1.0
 [6.0.1]: https://github.com/kreait/firebase-php/compare/6.0.0...6.0.1

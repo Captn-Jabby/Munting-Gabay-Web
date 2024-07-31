@@ -9,8 +9,15 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
+use InvalidArgumentException;
 use Kreait\Firebase\Auth\CreateSessionCookie;
+use Kreait\Firebase\Auth\ProjectAwareAuthResourceUrlBuilder;
+use Kreait\Firebase\Auth\TenantAwareAuthResourceUrlBuilder;
 use Psr\Http\Message\RequestInterface;
+
+use const JSON_FORCE_OBJECT;
+
+use function array_filter;
 
 final class GuzzleApiClientHandler implements Handler
 {
@@ -40,7 +47,7 @@ final class GuzzleApiClientHandler implements Handler
         try {
             /** @var array{sessionCookie?: string|null} $data */
             $data = Json::decode((string) $response->getBody(), true);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw new FailedToCreateSessionCookie($action, $response, 'Unable to parse the response data: '.$e->getMessage(), 0, $e);
         }
 
@@ -61,18 +68,20 @@ final class GuzzleApiClientHandler implements Handler
         ];
 
         if ($tenantId = $action->tenantId()) {
-            $uri = "https://identitytoolkit.googleapis.com/v1/projects/{$this->projectId}/tenants/{$tenantId}:createSessionCookie";
+            $urlBuilder = TenantAwareAuthResourceUrlBuilder::forProjectAndTenant($this->projectId, $tenantId);
         } else {
-            $uri = "https://identitytoolkit.googleapis.com/v1/projects/{$this->projectId}:createSessionCookie";
+            $urlBuilder = ProjectAwareAuthResourceUrlBuilder::forProject($this->projectId);
         }
+
+        $url = $urlBuilder->getUrl(':createSessionCookie');
 
         $body = Utils::streamFor(Json::encode($data, JSON_FORCE_OBJECT));
 
-        $headers = \array_filter([
+        $headers = array_filter([
             'Content-Type' => 'application/json; charset=UTF-8',
             'Content-Length' => (string) $body->getSize(),
         ]);
 
-        return new Request('POST', $uri, $headers, $body);
+        return new Request('POST', $url, $headers, $body);
     }
 }

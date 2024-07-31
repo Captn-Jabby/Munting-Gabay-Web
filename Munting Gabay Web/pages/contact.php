@@ -1,6 +1,11 @@
 <?php
-// Include header and navbar
-include('../includes/header.php');
+// Include Composer autoload file
+require '../vendor/autoload.php';
+
+use Brevo\Client\Api\TransactionalEmailsApi;
+use Brevo\Client\Configuration;
+use Brevo\Client\Model\SendSmtpEmail;
+use GuzzleHttp\Client;
 
 // Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -11,15 +16,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validate inputs
     if (!empty($name) && !empty($email) && !empty($subject) && !empty($message)) {
-        // Ideally, send an email or store the message in the database
-        // For demonstration, we'll just show a success message
-        $success = "Thank you for contacting us, $name. We will get back to you shortly.";
+        // Configure Brevo API
+        $config = Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
+        $apiInstance = new TransactionalEmailsApi(new Client(), $config);
+
+        $sendSmtpEmail = new SendSmtpEmail([
+            'to' => [['email' => 'muntinggabay@gmail.com', 'name' => 'Admin']], // Updated recipient
+            'sender' => ['email' => '7999dc001@smtp-brevo.com', 'name' => 'Web Feedback'],
+            'subject' => $subject,
+            'htmlContent' => "<p>Name: $name</p><p>Email: $email</p><p>Message: $message</p>"
+        ]);
+
+        try {
+            $apiInstance->sendTransacEmail($sendSmtpEmail);
+            $success = "Thank you for contacting us, $name. We will get back to you shortly.";
+        } catch (Exception $e) {
+            error_log("API Error: " . $e->getMessage()); // Log the error
+            $error = "Message could not be sent. API Error: {$e->getMessage()}";
+        }
     } else {
         $error = "Please fill in all fields.";
     }
 }
 ?>
-
+<link rel="stylesheet" href="../assets/css/style.css">
+<?php
+include('../includes/header.php');
+?>
 <div class="container mt-5">
     <div class="card">
         <div class="card-header text-white bg-success font-weight-bold">

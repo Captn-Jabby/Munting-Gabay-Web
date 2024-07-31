@@ -3,6 +3,7 @@ session_start();
 include('../config/dbcon.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Form data
     $username = $_POST['username'];
     $name = $_POST['name'];
     $address = $_POST['address'];
@@ -14,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phone_number = $_POST['phone_number'];
     $specialty = $_POST['specialty'];
 
+    // File upload paths
     $identification = $_FILES['identification']['name'];
     $licensure = $_FILES['licensure']['name'];
     $profile_picture = $_FILES['profile_picture']['name'];
@@ -24,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $profile_picture_target = $target_dir . basename($profile_picture);
 
     try {
+        // Check if user already exists
         $user = $auth->getUserByEmail($email);
 
         if ($user) {
@@ -32,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         }
     } catch (\Kreait\Firebase\Exception\Auth\UserNotFound $e) {
+        // User not found, proceed with registration
     } catch (\Exception $e) {
         $_SESSION['error'] = 'Error: ' . $e->getMessage();
         header('Location: register.php');
@@ -39,10 +43,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     try {
-        move_uploaded_file($_FILES["identification"]["tmp_name"], $identification_target);
-        move_uploaded_file($_FILES["licensure"]["tmp_name"], $licensure_target);
-        move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $profile_picture_target);
+        // Upload files
+        if (is_uploaded_file($_FILES["identification"]["tmp_name"])) {
+            move_uploaded_file($_FILES["identification"]["tmp_name"], $identification_target);
+        } else {
+            throw new Exception('Error uploading identification file.');
+        }
 
+        if (is_uploaded_file($_FILES["licensure"]["tmp_name"])) {
+            move_uploaded_file($_FILES["licensure"]["tmp_name"], $licensure_target);
+        } else {
+            throw new Exception('Error uploading licensure file.');
+        }
+
+        if (is_uploaded_file($_FILES["profile_picture"]["tmp_name"])) {
+            move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $profile_picture_target);
+        } else {
+            throw new Exception('Error uploading profile picture.');
+        }
+
+        // Create user in Firebase Authentication
         $userProperties = [
             'email' => $email,
             'emailVerified' => false,
@@ -53,11 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $createdUser = $auth->createUser($userProperties);
 
-        $db->collection('doctors')->document($createdUser->uid)->set([
+        // Save user data to Firestore
+        $database->collection('users')->document($createdUser->uid)->set([
             'username' => $username,
             'name' => $name,
             'address' => $address,
-            'birthdate' => $birthdate,
+            'birthdate' => new \DateTime($birthdate), // Convert to DateTime object
             'email' => $email,
             'clinic_name' => $clinic_name,
             'clinic_address' => $clinic_address,
@@ -72,8 +93,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $_SESSION['success'] = "Doctor registered successfully";
         header('Location: register.php');
+        exit();
     } catch (\Kreait\Firebase\Exception\Auth\AuthError $e) {
-        $_SESSION['error'] = 'Error: ' . $e->getMessage();
+        $_SESSION['error'] = 'Error creating user: ' . $e->getMessage();
+        header('Location: register.php');
+        exit();
+    } catch (\Google\Cloud\Core\ExponentialBackoff $e) {
+        $_SESSION['error'] = 'Error saving data to Firestore: ';
+        header('Location: register.php');
+        exit();
+    } catch (\Exception $e) {
+        $_SESSION['error'] = 'General error: ' . $e->getMessage();
         header('Location: register.php');
         exit();
     }

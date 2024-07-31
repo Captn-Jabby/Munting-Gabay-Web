@@ -12,29 +12,18 @@ $uid = $_SESSION['verified_user_id'];
 $user = $auth->getUser($uid);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $currentPassword = $_POST['current_password'];
-    $newPassword = $_POST['new_password'];
-    $confirmPassword = $_POST['confirm_password'];
+    $displayName = $_POST['display_name'];
 
-    if ($newPassword !== $confirmPassword) {
-        $error = "New password and confirm password do not match!";
-    } else {
-        $email = $_SESSION['user_email'];
-
-        try {
-            // Reauthenticate the user
-            $auth->signInWithEmailAndPassword($email, $currentPassword);
-
-            // Update the user's password
-            $auth->changeUserPassword($uid, $newPassword);
-            $success = "Password updated successfully!";
-        } catch (\Kreait\Firebase\Exception\Auth\InvalidPassword $e) {
-            $error = "Current password is incorrect.";
-        } catch (\Kreait\Firebase\Exception\Auth\AuthError $e) {
-            $error = "Error updating password: " . $e->getMessage();
-        } catch (\Exception $e) {
-            $error = "An unexpected error occurred: " . $e->getMessage();
-        }
+    try {
+        // Update the user's display name
+        $auth->updateUser($uid, [
+            'displayName' => $displayName,
+        ]);
+        $success = "Profile updated successfully!";
+    } catch (\Kreait\Firebase\Exception\Auth\AuthError $e) {
+        $error = "Error updating profile: " . $e->getMessage();
+    } catch (\Exception $e) {
+        $error = "An unexpected error occurred: " . $e->getMessage();
     }
 }
 ?>
@@ -68,23 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <form action="profile.php" method="POST">
                     <div class="mb-3">
                         <label for="displayName" class="form-label">Display Name</label>
-                        <input type="text" class="form-control" id="displayName" name="displayName" value="<?= htmlspecialchars($user->displayName, ENT_QUOTES, 'UTF-8'); ?>" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($user->email, ENT_QUOTES, 'UTF-8'); ?>" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="currentPassword" class="form-label">Current Password</label>
-                        <input type="password" class="form-control" id="currentPassword" name="current_password" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="newPassword" name="new_password" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
+                        <input type="text" class="form-control" id="displayName" name="display_name" value="<?= htmlspecialchars($user->displayName, ENT_QUOTES, 'UTF-8'); ?>" required>
                     </div>
                     <button type="submit" class="btn btn-success">Update Profile</button>
                 </form>
