@@ -97,7 +97,56 @@
         </div>
 
     </main>
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center text-success mb-4">Frequently Asked Questions (FAQs)</h2>
+            <div class="accordion" id="faqs">
+                <div class="card">
+                    <div class="card-header" id="faq1">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link text-success" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                What is autism?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse1" class="collapse show" aria-labelledby="faq1" data-parent="#faqs">
+                        <div class="card-body">
+                            Autism, or autism spectrum disorder (ASD), refers to a broad range of conditions characterized by challenges with social skills, repetitive behaviors, speech, and nonverbal communication.
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="faq2">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link text-success collapsed" type="button" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                How is autism diagnosed?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse2" class="collapse" aria-labelledby="faq2" data-parent="#faqs">
+                        <div class="card-body">
+                            Autism is diagnosed through a combination of developmental screenings, comprehensive diagnostic evaluations, and assessments by medical professionals.
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="faq3">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link text-success collapsed" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                What resources are available for individuals with autism?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse3" class="collapse" aria-labelledby="faq3" data-parent="#faqs">
+                        <div class="card-body">
+                            There are various resources available, including therapy services, educational programs, support groups, and online communities dedicated to providing information and assistance.
+                        </div>
+                    </div>
+                </div>
 
+            </div>
+        </div>
+    </section>
     <?php include('includes/footer.php'); ?>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

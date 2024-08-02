@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $createdUser = $auth->createUser($userProperties);
 
         // Save user data to Firestore
-        $database->collection('users')->document($createdUser->uid)->set([
+        $firestore->database()->collection('users')->document($createdUser->uid)->set([
             'username' => $username,
             'name' => $name,
             'address' => $address,
@@ -96,10 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     } catch (\Kreait\Firebase\Exception\Auth\AuthError $e) {
         $_SESSION['error'] = 'Error creating user: ' . $e->getMessage();
-        header('Location: register.php');
-        exit();
-    } catch (\Google\Cloud\Core\ExponentialBackoff $e) {
-        $_SESSION['error'] = 'Error saving data to Firestore: ';
         header('Location: register.php');
         exit();
     } catch (\Exception $e) {

@@ -92,7 +92,7 @@ include('../config/session_check.php');
                         <div class="card-body">
                             <p>Database Connection: <span class="text-success">OK</span></p>
                             <p>API Status: <span class="text-warning">Minor Issues</span></p>
-                            <p>Server Load: <span class="text-success">Normal</span></p>
+                            <p>Server Load: <span class="text-success">Stable</span></p>
                         </div>
                     </div>
 
